@@ -54,7 +54,12 @@ class HelpScreen extends StatelessWidget {
               'Changelog',
               Icons.history,
               [
-                'v1.0.0 (Terbaru)',
+                'v1.0.1 (Terbaru)',
+                '• Fix: Musik otomatis berhenti saat aplikasi di-minimize.',
+                '• Fix: Sinkronisasi BGM saat menang dan reset game.',
+                '• Peningkatan performa audio dan lifecycle management.',
+                '',
+                'v1.0.0',
                 '• Rilis perdana game dengan desain premium.',
                 '• Fitur Musik Latar (BGM) & Efek Suara (SFX).',
                 '• Riwayat tebakan dengan UI Glassmorphism.',
@@ -119,7 +124,7 @@ class HelpScreen extends StatelessWidget {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           Text(
-            'Versi 1.0.0',
+            'Versi 1.0.1',
             style: TextStyle(color: Color(0xFFD4AAFF), fontSize: 12),
           ),
         ],
