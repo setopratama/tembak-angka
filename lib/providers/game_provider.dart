@@ -98,6 +98,7 @@ class GameNotifier extends StateNotifier<GameState> {
 
       // Play Win Sound
       if (!state.isMuted) {
+        _bgmPlayer.pause(); // Jeda musik latar saat menang agar suara kemenangan jelas
         _sfxPlayer.setVolume(state.volume);
         _sfxPlayer.play(AssetSource('audio/win.mp3'));
       }
@@ -126,18 +127,38 @@ class GameNotifier extends StateNotifier<GameState> {
 
   void resetGame() {
     _initGame();
+    // Memutar kembali musik latar saat permainan diulang
+    if (!state.isMuted) {
+      _bgmPlayer.resume();
+    }
   }
 
   void toggleMute() {
     final newMuteStatus = !state.isMuted;
     state = state.copyWith(isMuted: newMuteStatus);
-    _bgmPlayer.setVolume(newMuteStatus ? 0 : state.volume * 0.5);
+    if (newMuteStatus) {
+      _bgmPlayer.pause();
+    } else {
+      _bgmPlayer.setVolume(state.volume * 0.5);
+      _bgmPlayer.resume();
+    }
   }
 
   void setVolume(double value) {
     state = state.copyWith(volume: value);
     if (!state.isMuted) {
       _bgmPlayer.setVolume(value * 0.5);
+    }
+  }
+
+  void handleAppLifecycle(bool isResumed) {
+    if (isResumed) {
+      // Hanya resume jika tidak dimute dan permainan belum dimenangkan
+      if (!state.isMuted && !state.isWon) {
+        _bgmPlayer.resume();
+      }
+    } else {
+      _bgmPlayer.pause();
     }
   }
 

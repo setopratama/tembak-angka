@@ -11,13 +11,14 @@ class GameScreen extends ConsumerStatefulWidget {
   ConsumerState<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends ConsumerState<GameScreen> {
+class _GameScreenState extends ConsumerState<GameScreen> with WidgetsBindingObserver {
   late ConfettiController _confettiController;
   final TextEditingController _guessController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _confettiController = ConfettiController(
       duration: const Duration(seconds: 3),
     );
@@ -25,9 +26,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _confettiController.dispose();
     _guessController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(gameProvider.notifier).handleAppLifecycle(true);
+    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      ref.read(gameProvider.notifier).handleAppLifecycle(false);
+    }
   }
 
   void _handleGuess() {
