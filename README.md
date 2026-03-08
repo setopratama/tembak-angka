@@ -1,6 +1,12 @@
 # 🎮 TEBAK ANGKA - FLUTTER REFACTORING PROJECT
 
 [![Download APK](https://img.shields.io/badge/Download-APK-7F00FF?style=for-the-badge&logo=android&logoColor=white)](https://github.com/setopratama/tembak-angka/releases)
+[![Flutter](https://img.shields.io/badge/Flutter-v3.0+-blue?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-v3.0+-0175C2?style=flat-square&logo=dart)](https://dart.dev)
+[![Last Commit](https://img.shields.io/github/last-commit/setopratama/tembak-angka?style=flat-square)](https://github.com/setopratama/tembak-angka/commits/main)
+[![Repo Size](https://img.shields.io/github/repo-size/setopratama/tembak-angka?style=flat-square)](https://github.com/setopratama/tembak-angka)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/Status-Complete-brightgreen?style=flat-square)](https://github.com/setopratama/tembak-angka)
 
 ## 📦 COMPLETE DELIVERABLES PACKAGE
 
