@@ -50,6 +50,18 @@ class HelpScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 32),
+            _buildSection(
+              'Changelog',
+              Icons.history,
+              [
+                'v1.0.0 (Terbaru)',
+                '• Rilis perdana game dengan desain premium.',
+                '• Fitur Musik Latar (BGM) & Efek Suara (SFX).',
+                '• Riwayat tebakan dengan UI Glassmorphism.',
+                '• Penambahan sistem bantuan & pengaturan audio.',
+              ],
+            ),
+            const SizedBox(height: 32),
             _buildVersionInfo(),
           ],
         ),
