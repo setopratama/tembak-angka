@@ -7,10 +7,12 @@ Selamat datang di era baru **Tebak Angka**! Kami telah melakukan perombakan tota
 
 ### **✨ Apa yang Baru?**
 *   **Modern UI/UX:** Desain baru menggunakan **Material Design 3** dengan animasi transisi yang mulus.
-*   **Sistem Hint Cerdas:** Umpan balik langsung (Terlalu Besar/Kecil) dengan indikator warna untuk membantu Anda menebak lebih cepat.
-*   **Perayaan Kemenangan:** Animasi **Confetti** yang meriah saat Anda berhasil menebak angka dengan benar! 🥳
-*   **Guess History:** Lacak semua tebakan Anda dalam satu sesi untuk menyusun strategi yang lebih baik.
-*   **Mode Gelap (Dark Mode):** Dukungan penuh untuk mode gelap agar mata tetap nyaman bermain di malam hari.
+*   **Sistem Hint Cerdas:** Umpan balik langsung (Terlalu Besar/Kecil) dengan indikator warna.
+*   **Efek Suara Baru:** Umpan balik audio baru untuk tebakan yang terlalu tinggi atau terlalu rendah.
+*   **Ikon Baru:** Ikon aplikasi yang lebih segar dan modern.
+*   **Perayaan Kemenangan:** Animasi **Confetti** yang meriah saat menang! 🥳
+*   **Guess History:** Lacak semua tebakan Anda dalam satu sesi.
+*   **Mode Gelap (Dark Mode):** Dukungan penuh untuk kenyamanan mata.
 
 ### **🛠️ Peningkatan Teknis**
 *   **Performa 60 FPS:** Navigasi dan animasi yang sangat lancar di berbagai perangkat Android.
@@ -19,7 +21,7 @@ Selamat datang di era baru **Tebak Angka**! Kami telah melakukan perombakan tota
 *   **Build Efisien:** Ukuran APK yang dioptimalkan (~25 MB) untuk penghematan ruang penyimpanan.
 
 ### **📦 Informasi Tambahan**
-*   **Versi:** 1.0.0 (First Stable Release)
+*   **Versi:** 1.0.1+2 (Latest Update)
 *   **Min. Android:** API 21 (Android 5.0)
 *   **Framework:** Flutter 3.0+
 
@@ -31,4 +33,4 @@ Selamat datang di era baru **Tebak Angka**! Kami telah melakukan perombakan tota
 3. Selamat bermain dan pecahkan rekor skor tertinggi!
 
 ---
-*Last Updated: 2026-03-09*
+*Last Updated: 2026-03-09 (Updated Sound SFX & Icon)*

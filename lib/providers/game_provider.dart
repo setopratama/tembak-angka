@@ -104,8 +104,18 @@ class GameNotifier extends StateNotifier<GameState> {
       }
     } else if (guess < state.secretNumber) {
       hint = 'Terlalu Kecil! Coba angka yang lebih besar 📈';
+      // Play Low Sound
+      if (!state.isMuted) {
+        _sfxPlayer.setVolume(state.volume);
+        _sfxPlayer.play(AssetSource('audio/low.mp3'));
+      }
     } else {
       hint = 'Terlalu Besar! Coba angka yang lebih kecil 📉';
+      // Play High Sound
+      if (!state.isMuted) {
+        _sfxPlayer.setVolume(state.volume);
+        _sfxPlayer.play(AssetSource('audio/high.mp3'));
+      }
     }
 
     final newHistory = [
