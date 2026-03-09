@@ -10,15 +10,17 @@
   <br>
 </p>
 
+---
+
 ## 📦 COMPLETE DELIVERABLES PACKAGE
 
 Welcome! This package contains a **production-ready Flutter application** refactored from the original PHP Tebak Angka game, along with comprehensive professional documentation suitable for AI agent programming.
+
 <p align="center">
   <a href="https://github.com/setopratama/tembak-angka/releases">
     <img src="https://img.shields.io/badge/Download-APK-7F00FF?style=for-the-badge&logo=android&logoColor=white" alt="Download APK">
   </a>
 </p>
----
 
 ## 🚀 START HERE
 
