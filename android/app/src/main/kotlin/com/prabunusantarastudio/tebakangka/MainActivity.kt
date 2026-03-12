@@ -1,4 +1,4 @@
-package com.example.tebak_angka_flutter
+package com.prabunusantarastudio.tebakangka
 
 import io.flutter.embedding.android.FlutterActivity
 

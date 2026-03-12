@@ -60,8 +60,22 @@ class GameNotifier extends StateNotifier<GameState> {
   final AudioPlayer _sfxPlayer = AudioPlayer();
 
   GameNotifier() : super(GameState(secretNumber: _generateRandomNumber())) {
+    _setupAudio();
     _initGame();
-    _playBgm();
+  }
+
+  Future<void> _setupAudio() async {
+    // Memberitahu sistem Android agar musik aplikasi bisa jalan berbarengan dengan sfx dan tidak saling menggantikan
+    final audioContext = AudioContextAndroid(
+      isSpeakerphoneOn: true,
+      stayAwake: true,
+      contentType: AndroidContentType.music,
+      usageType: AndroidUsageType.assistanceSonification,
+      audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+    );
+    
+    AudioLogger.logLevel = AudioLogLevel.error;
+    AudioPlayer.global.setAudioContext(AudioContext(android: audioContext));
   }
 
   static int _generateRandomNumber() {
@@ -70,18 +84,17 @@ class GameNotifier extends StateNotifier<GameState> {
 
   void _initGame() {
     state = GameState(secretNumber: _generateRandomNumber());
+    _playBgm();
   }
 
   Future<void> _playBgm() async {
     try {
-      // Pastikan volume diatur SEBELUM play
-      await _bgmPlayer.setVolume(state.isMuted ? 0 : state.volume * 0.5);
+      if (_bgmPlayer.state == PlayerState.playing) return;
+      
+      await _bgmPlayer.setVolume(state.isMuted ? 0 : state.volume * 0.4);
       await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
-
-      // Mulai putar musik latar secara loop
       await _bgmPlayer.play(AssetSource('audio/bgm.mp3'));
     } catch (e) {
-      // Menghindari crash jika audio gagal dimuat di platform tertentu
       debugPrint('Audio Error (BGM): $e');
     }
   }
@@ -96,24 +109,23 @@ class GameNotifier extends StateNotifier<GameState> {
       hint = 'Selamat! Anda menemukan angka $guess 🎉';
       isWon = true;
 
-      // Play Win Sound
+      // Play Win Sound (70% of master volume)
       if (!state.isMuted) {
-        _bgmPlayer.pause(); // Jeda musik latar saat menang agar suara kemenangan jelas
-        _sfxPlayer.setVolume(state.volume);
+        _sfxPlayer.setVolume(state.volume * 0.7);
         _sfxPlayer.play(AssetSource('audio/win.mp3'));
       }
     } else if (guess < state.secretNumber) {
       hint = 'Terlalu Kecil! Coba angka yang lebih besar 📈';
-      // Play Low Sound
+      // Play Low Sound (70% of master volume)
       if (!state.isMuted) {
-        _sfxPlayer.setVolume(state.volume);
+        _sfxPlayer.setVolume(state.volume * 0.7);
         _sfxPlayer.play(AssetSource('audio/low.mp3'));
       }
     } else {
       hint = 'Terlalu Besar! Coba angka yang lebih kecil 📉';
-      // Play High Sound
+      // Play High Sound (70% of master volume)
       if (!state.isMuted) {
-        _sfxPlayer.setVolume(state.volume);
+        _sfxPlayer.setVolume(state.volume * 0.7);
         _sfxPlayer.play(AssetSource('audio/high.mp3'));
       }
     }
@@ -137,9 +149,10 @@ class GameNotifier extends StateNotifier<GameState> {
 
   void resetGame() {
     _initGame();
-    // Memutar kembali musik latar saat permainan diulang
     if (!state.isMuted) {
-      _bgmPlayer.resume();
+      if (_bgmPlayer.state != PlayerState.playing) {
+        _bgmPlayer.resume();
+      }
     }
   }
 
@@ -149,7 +162,7 @@ class GameNotifier extends StateNotifier<GameState> {
     if (newMuteStatus) {
       _bgmPlayer.pause();
     } else {
-      _bgmPlayer.setVolume(state.volume * 0.5);
+      _bgmPlayer.setVolume(state.volume * 0.4);
       _bgmPlayer.resume();
     }
   }
@@ -157,7 +170,8 @@ class GameNotifier extends StateNotifier<GameState> {
   void setVolume(double value) {
     state = state.copyWith(volume: value);
     if (!state.isMuted) {
-      _bgmPlayer.setVolume(value * 0.5);
+      _bgmPlayer.setVolume(value * 0.4); // BGM 40% dari Master
+      _sfxPlayer.setVolume(value * 0.7); // SFX 70% dari Master
     }
   }
 

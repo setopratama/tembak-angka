@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "761534087331",
+    "project_id": "tebak-angka-9058c",
+    "storage_bucket": "tebak-angka-9058c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761534087331:android:451772334dfe093e49bf16",
+        "android_client_info": {
+          "package_name": "com.prabunusantarastudio.tebakangka"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsKYN84e99NBHEIDZud4eU9LPInrMJdbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
