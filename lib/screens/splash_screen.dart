@@ -1,10 +1,38 @@
 import 'package:flutter/material.dart';
 
-class SplashScreen extends StatelessWidget {
+import '../providers/version_provider.dart';
+
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Jalankan pengecekan versi saat splash screen muncul
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      VersionService().checkVersion(context);
+    });
+
+    // Simulasi loading selama 2 detik
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Stack(
         children: [
@@ -41,62 +69,30 @@ class SplashScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              // Logo/Icon part
-              TweenAnimationBuilder(
-                duration: const Duration(seconds: 2),
-                tween: Tween<double>(begin: 0, end: 1),
-                builder: (context, double value, child) {
-                  return Opacity(
-                    opacity: value,
-                    child: Transform.scale(
-                      scale: value,
-                      child: child,
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFD4AAFF).withOpacity(0.3),
-                        blurRadius: 40,
-                        spreadRadius: 10,
+              if (_isLoading)
+                const Center(
+                  child: CircularProgressIndicator(
+                    color: Color(0xFFD4AAFF),
+                  ),
+                ),
+              if (!_isLoading) ...[
+                const Text(
+                  'TEBAK ANGKA',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 4,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10,
+                        color: Colors.black45,
+                        offset: Offset(2, 2),
                       ),
                     ],
                   ),
-                  child: const Text(
-                    '❓',
-                    style: TextStyle(fontSize: 80),
-                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'TEBAK ANGKA',
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 4,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 10,
-                      color: Colors.black45,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-              ),
-              const Text(
-                'Flutter Edition',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Color(0xFFD4AAFF),
-                  letterSpacing: 2,
-                ),
-              ),
+              ],
               const Spacer(),
               // Help/Instruction Area
               Container(
@@ -109,27 +105,30 @@ class SplashScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Text(
-                      'Cara Bermain:',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                    if (!_isLoading) ...[
+                      const Text(
+                        'Cara Bermain:',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildStep(Icons.looks_one, 'Pikirkan angka antara 1-100'),
-                    _buildStep(Icons.input, 'Masukkan tebakanmu di kolom'),
-                    _buildStep(Icons.tips_and_updates, 'Ikuti petunjuk "Lebih Besar" atau "Lebih Kecil"'),
-                    _buildStep(Icons.emoji_events, 'Temukan angkanya sesegera mungkin!'),
+                      const SizedBox(height: 16),
+                      _buildStep(Icons.looks_one, 'Pikirkan angka antara 1-100'),
+                      _buildStep(Icons.input, 'Masukkan tebakanmu di kolom'),
+                      _buildStep(Icons.tips_and_updates, 'Ikuti petunjuk "Lebih Besar" atau "Lebih Kecil"'),
+                      _buildStep(Icons.emoji_events, 'Temukan angkanya sesegera mungkin!'),
+                    ],
                   ],
                 ),
               ),
               const SizedBox(height: 40),
               // Action Button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: ElevatedButton(
+              if (!_isLoading)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacementNamed(context, '/game');
                   },

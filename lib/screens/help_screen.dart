@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -54,22 +55,23 @@ class HelpScreen extends StatelessWidget {
               'Changelog',
               Icons.history,
               [
-                'v1.0.1+2 (Terbaru)',
-                '• New: Splash Screen interaktif dengan panduan cara bermain.',
-                '• New: Tombol "Mulai Bermain" manual agar pemain tidak terburu-buru.',
-                '• Fix: Audio mixing (BGM & SFX kini berjalan bersamaan).',
-                '• Konfigurasi rilis Play Store dan optimasi Gradle.',
+                'v1.0.4+11 (Terbaru)',
+                '• Fix: Penambahan izin Internet (Android Manifest).',
+                '• Fix: Sinkronisasi Firestore untuk Versi Kontrol.',
                 '',
-                'v1.0.1',
-                '• Fix: Musik otomatis berhenti saat aplikasi di-minimize.',
-                '• Fix: Sinkronisasi BGM saat menang dan reset game.',
-                '• Peningkatan performa audio dan lifecycle management.',
+                'v1.0.4+10',
+                '• Fix: Logika pengecekan versi lebih tangguh.',
+                '• Fix: Perbaikan deteksi update dari Firestore.',
+                '• Improved: Logging debug untuk track koneksi.',
                 '',
-                'v1.0.0',
-                '• Rilis perdana game dengan desain premium.',
-                '• Fitur Musik Latar (BGM) & Efek Suara (SFX).',
-                '• Riwayat tebakan dengan UI Glassmorphism.',
-                '• Penambahan sistem bantuan & pengaturan audio.',
+                'v1.0.3+9',
+                '• New: Native Splash tanpa logo ikon di tengah.',
+                '• Improved: Transisi splash screen lebih halus.',
+                '',
+                'v1.0.3+8',
+                '• Fix: Audio Balance pelan (BGM 25%) agar SFX jelas.',
+                '• Fix: Bug SFX hilang setelah 2x tebakan.',
+                '• New: Sistem update otomatis via Firestore.',
               ],
             ),
             const SizedBox(height: 32),
@@ -111,30 +113,40 @@ class HelpScreen extends StatelessWidget {
   }
 
   Widget _buildVersionInfo() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: const Column(
-        children: [
-          Text(
-            'Informasi Game',
-            style: TextStyle(color: Colors.white54, fontSize: 12),
+    return FutureBuilder<PackageInfo>(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, snapshot) {
+        String version = '...';
+        if (snapshot.hasData) {
+          version = 'v${snapshot.data!.version}+${snapshot.data!.buildNumber}';
+        }
+        return Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.white10),
           ),
-          SizedBox(height: 4),
-          Text(
-            'Tebak Angka - Flutter Edition',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          child: Column(
+            children: [
+              const Text(
+                'Informasi Game',
+                style: TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Tebak Angka - Flutter Edition',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'Versi $version',
+                style: const TextStyle(color: Color(0xFFD4AAFF), fontSize: 12),
+              ),
+            ],
           ),
-          Text(
-            'Versi 1.0.1',
-            style: TextStyle(color: Color(0xFFD4AAFF), fontSize: 12),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

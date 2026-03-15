@@ -60,7 +60,11 @@ class GameNotifier extends StateNotifier<GameState> {
   final AudioPlayer _sfxPlayer = AudioPlayer();
 
   GameNotifier() : super(GameState(secretNumber: _generateRandomNumber())) {
-    _setupAudio();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _setupAudio();
     _initGame();
   }
 
@@ -70,12 +74,31 @@ class GameNotifier extends StateNotifier<GameState> {
       isSpeakerphoneOn: true,
       stayAwake: true,
       contentType: AndroidContentType.music,
-      usageType: AndroidUsageType.assistanceSonification,
-      audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+      usageType: AndroidUsageType.game,
+      audioFocus: AndroidAudioFocus.none, // Menggunakan none agar BGM dan SFX bisa dimixing oleh sistem
     );
     
     AudioLogger.logLevel = AudioLogLevel.error;
-    AudioPlayer.global.setAudioContext(AudioContext(android: audioContext));
+    AudioPlayer.global.setAudioContext(AudioContext(
+      android: audioContext,
+      iOS: AudioContextIOS(
+        category: AVAudioSessionCategory.ambient, // Ambient memungkinkan mixing di iOS
+      ),
+    ));
+  }
+
+  void _playSfx(String path) async {
+    if (state.isMuted) return;
+    try {
+      // Pastikan player dalam keadaan siap dan berhenti dari pemutaran sebelumnya
+      await _sfxPlayer.stop();
+      await _sfxPlayer.setVolume(state.volume * 1.0); // SFX lebih keras (100% master)
+      
+      // Mode default (mediaPlayer) biasanya lebih stabil di banyak device dibanding lowLatency
+      await _sfxPlayer.play(AssetSource(path));
+    } catch (e) {
+      debugPrint('SFX Error: $e');
+    }
   }
 
   static int _generateRandomNumber() {
@@ -91,7 +114,7 @@ class GameNotifier extends StateNotifier<GameState> {
     try {
       if (_bgmPlayer.state == PlayerState.playing) return;
       
-      await _bgmPlayer.setVolume(state.isMuted ? 0 : state.volume * 0.4);
+      await _bgmPlayer.setVolume(state.isMuted ? 0 : state.volume * 0.25); // BGM lebih pelan (25% master)
       await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
       await _bgmPlayer.play(AssetSource('audio/bgm.mp3'));
     } catch (e) {
@@ -108,26 +131,13 @@ class GameNotifier extends StateNotifier<GameState> {
     if (guess == state.secretNumber) {
       hint = 'Selamat! Anda menemukan angka $guess 🎉';
       isWon = true;
-
-      // Play Win Sound (70% of master volume)
-      if (!state.isMuted) {
-        _sfxPlayer.setVolume(state.volume * 0.7);
-        _sfxPlayer.play(AssetSource('audio/win.mp3'));
-      }
+      _playSfx('audio/win.mp3');
     } else if (guess < state.secretNumber) {
       hint = 'Terlalu Kecil! Coba angka yang lebih besar 📈';
-      // Play Low Sound (70% of master volume)
-      if (!state.isMuted) {
-        _sfxPlayer.setVolume(state.volume * 0.7);
-        _sfxPlayer.play(AssetSource('audio/low.mp3'));
-      }
+      _playSfx('audio/low.mp3');
     } else {
       hint = 'Terlalu Besar! Coba angka yang lebih kecil 📉';
-      // Play High Sound (70% of master volume)
-      if (!state.isMuted) {
-        _sfxPlayer.setVolume(state.volume * 0.7);
-        _sfxPlayer.play(AssetSource('audio/high.mp3'));
-      }
+      _playSfx('audio/high.mp3');
     }
 
     final newHistory = [
@@ -170,8 +180,8 @@ class GameNotifier extends StateNotifier<GameState> {
   void setVolume(double value) {
     state = state.copyWith(volume: value);
     if (!state.isMuted) {
-      _bgmPlayer.setVolume(value * 0.4); // BGM 40% dari Master
-      _sfxPlayer.setVolume(value * 0.7); // SFX 70% dari Master
+      _bgmPlayer.setVolume(value * 0.25); // BGM tetap 25% dari Master
+      _sfxPlayer.setVolume(value * 1.0);  // SFX tetap 100% dari Master
     }
   }
 
